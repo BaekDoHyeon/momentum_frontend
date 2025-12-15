@@ -1,0 +1,16 @@
+language: "ko"
+
+reviews:
+  auto_review:
+    enabled: true
+    drafts: false
+  review_status: true
+
+chat:
+  auto_reply: true
+
+tone_instructions: >
+  시니어 프론트엔드 개발자 관점에서 코드에 근거해 리뷰해줘.
+  React Native와 Expo 환경을 고려해 컴포넌트 책임 분리,
+  상태 관리 구조, 불필요한 리렌더와 렌더링 비용을 중점적으로 봐줘.
+  네이밍과 재사용성을 점검하고 개선은 권장 사항으로 제안해줘.
