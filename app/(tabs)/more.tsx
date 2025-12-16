@@ -27,6 +27,17 @@ export default function MorePage() {
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
+    // TODO: Integrate with global theme context/provider
+    // For now, this only updates local state for UI toggle display
+    console.log("Theme toggled to:", !isDarkMode ? "dark" : "light");
+  };
+
+  const handleLogout = () => {
+    // TODO: Clear authentication state and navigate to login
+    console.log("Logout pressed - clear auth state and navigate to login");
+    // Example:
+    // await clearAuthToken();
+    // router.replace('/login');
   };
 
   return (
@@ -96,7 +107,10 @@ export default function MorePage() {
           </View>
 
           {/* Logout Button */}
-          <Pressable className="w-full flex-row items-center justify-center gap-2 p-4 rounded-[16px] bg-[rgba(255,107,107,0.1)] border border-[rgba(255,107,107,0.3)]">
+          <Pressable
+            onPress={handleLogout}
+            className="w-full flex-row items-center justify-center gap-2 p-4 rounded-[16px] bg-[rgba(255,107,107,0.1)] border border-[rgba(255,107,107,0.3)]"
+          >
             <Text className="text-[20px]">🚪</Text>
             <Text className="text-[15px] text-[#ff6b6b]">로그아웃</Text>
           </Pressable>

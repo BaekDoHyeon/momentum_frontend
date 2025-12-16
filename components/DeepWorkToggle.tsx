@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { View, Text, Pressable } from "react-native";
+import { formatTime, formatDailyTime } from "@/utils/timeFormat";
 
 export default function DeepWorkToggle() {
   const [isActive, setIsActive] = useState(false);
@@ -21,19 +22,6 @@ export default function DeepWorkToggle() {
       if (interval) clearInterval(interval);
     };
   }, [isActive]);
-
-  const formatTime = (totalSeconds: number) => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const secs = totalSeconds % 60;
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-  };
-
-  const formatDailyTime = (totalSeconds: number) => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    return `${hours}h ${minutes}m`;
-  };
 
   return (
     <View className="flex-row gap-3 w-full">

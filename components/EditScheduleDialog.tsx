@@ -9,49 +9,20 @@ import {
   Platform,
   Dimensions,
 } from "react-native";
+import { Schedule } from "@/types/schedule";
+import {
+  CATEGORY_OPTIONS,
+  STATUS_OPTIONS,
+  NOTIFICATION_OPTIONS,
+} from "@/constants/scheduleConfig";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-
-interface Schedule {
-  id: number;
-  time: string;
-  title: string;
-  emoji?: string;
-  category?: string;
-  startTime?: string;
-  endTime?: string;
-  progress?: number;
-  remaining?: string;
-  status?: "pending" | "completed" | "failed";
-}
 
 interface EditScheduleDialogProps {
   schedule: Schedule;
   isOpen: boolean;
   onClose: () => void;
 }
-
-const CATEGORIES = [
-  { value: "work", label: "업무" },
-  { value: "personal", label: "개인" },
-  { value: "health", label: "건강" },
-  { value: "study", label: "학습" },
-  { value: "meeting", label: "회의" },
-];
-
-const STATUSES = [
-  { value: "pending", label: "대기 중" },
-  { value: "completed", label: "완료" },
-  { value: "failed", label: "실패" },
-];
-
-const NOTIFICATIONS = [
-  { value: "none", label: "알림 없음" },
-  { value: "5min", label: "5분 전" },
-  { value: "15min", label: "15분 전" },
-  { value: "30min", label: "30분 전" },
-  { value: "1hour", label: "1시간 전" },
-];
 
 export default function EditScheduleDialog({
   schedule,
@@ -77,7 +48,7 @@ export default function EditScheduleDialog({
 
       setFormData({
         title: schedule.title,
-        date: new Date().toISOString().split("T")[0],
+        date: schedule.date || new Date().toISOString().split("T")[0],
         startTime: schedule.startTime || times[0] || "",
         endTime: schedule.endTime || times[1] || "",
         notification: "none",
@@ -184,7 +155,7 @@ export default function EditScheduleDialog({
               <View className="gap-2">
                 <Text className="text-[#d1d5dc] text-[14px]">카테고리</Text>
                 <View className="flex-row flex-wrap gap-2">
-                  {CATEGORIES.map((cat) => (
+                  {CATEGORY_OPTIONS.map((cat) => (
                     <Pressable
                       key={cat.value}
                       onPress={() =>
@@ -214,7 +185,7 @@ export default function EditScheduleDialog({
               <View className="gap-2">
                 <Text className="text-[#d1d5dc] text-[14px]">상태</Text>
                 <View className="flex-row flex-wrap gap-2">
-                  {STATUSES.map((stat) => (
+                  {STATUS_OPTIONS.map((stat) => (
                     <Pressable
                       key={stat.value}
                       onPress={() =>
@@ -244,7 +215,7 @@ export default function EditScheduleDialog({
               <View className="gap-2">
                 <Text className="text-[#d1d5dc] text-[14px]">알림</Text>
                 <View className="flex-row flex-wrap gap-2">
-                  {NOTIFICATIONS.map((notif) => (
+                  {NOTIFICATION_OPTIONS.map((notif) => (
                     <Pressable
                       key={notif.value}
                       onPress={() =>

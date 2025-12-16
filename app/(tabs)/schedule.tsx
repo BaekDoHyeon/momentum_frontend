@@ -1,33 +1,9 @@
 import { useState } from "react";
 import { View, Text, ScrollView, Pressable } from "react-native";
+import { Schedule } from "@/types/schedule";
+import { CATEGORIES, STATUS_CONFIG } from "@/constants/scheduleConfig";
 import EditScheduleDialog from "@/components/EditScheduleDialog";
 import FABButton from "@/components/FABButton";
-
-const CATEGORIES = {
-  work: { label: "업무", color: "#ad46ff" },
-  personal: { label: "개인", color: "#ff6b6b" },
-  health: { label: "건강", color: "#51cf66" },
-  study: { label: "학습", color: "#ffd43b" },
-  meeting: { label: "회의", color: "#339af0" },
-};
-
-const STATUS_CONFIG = {
-  pending: { label: "진행전", color: "#6a7282" },
-  completed: { label: "완료", color: "#51cf66" },
-  failed: { label: "실패", color: "#ff6b6b" },
-};
-
-interface Schedule {
-  id: number;
-  date: string;
-  time: string;
-  title: string;
-  category: string;
-  emoji: string;
-  status?: "pending" | "completed" | "failed";
-  startTime?: string;
-  endTime?: string;
-}
 
 const mockSchedules: Schedule[] = [
   { id: 1, date: "2025-12-13", time: "09:00 - 10:30", title: "팀워크 프로젝트", category: "work", emoji: "💼", status: "pending" },

@@ -1,29 +1,7 @@
 import { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  ScrollView,
-  Platform,
-} from "react-native";
+import { View, Text, TextInput, Pressable, ScrollView, Alert } from "react-native";
 import { useRouter } from "expo-router";
-
-const CATEGORIES = [
-  { value: "work", label: "업무" },
-  { value: "personal", label: "개인" },
-  { value: "health", label: "건강" },
-  { value: "study", label: "학습" },
-  { value: "meeting", label: "회의" },
-];
-
-const NOTIFICATIONS = [
-  { value: "none", label: "알림 없음" },
-  { value: "5min", label: "5분 전" },
-  { value: "15min", label: "15분 전" },
-  { value: "30min", label: "30분 전" },
-  { value: "1hour", label: "1시간 전" },
-];
+import { CATEGORY_OPTIONS, NOTIFICATION_OPTIONS } from "@/constants/scheduleConfig";
 
 export default function AddScheduleForm() {
   const router = useRouter();
@@ -36,8 +14,48 @@ export default function AddScheduleForm() {
     category: "",
     memo: "",
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.title.trim()) {
+      newErrors.title = "제목을 입력해주세요";
+    }
+
+    if (!formData.date.trim()) {
+      newErrors.date = "날짜를 입력해주세요";
+    } else if (!/^\d{4}-\d{2}-\d{2}$/.test(formData.date)) {
+      newErrors.date = "날짜 형식이 올바르지 않습니다 (YYYY-MM-DD)";
+    }
+
+    if (!formData.startTime.trim()) {
+      newErrors.startTime = "시작 시간을 입력해주세요";
+    } else if (!/^\d{2}:\d{2}$/.test(formData.startTime)) {
+      newErrors.startTime = "시간 형식이 올바르지 않습니다 (HH:MM)";
+    }
+
+    if (!formData.endTime.trim()) {
+      newErrors.endTime = "종료 시간을 입력해주세요";
+    } else if (!/^\d{2}:\d{2}$/.test(formData.endTime)) {
+      newErrors.endTime = "시간 형식이 올바르지 않습니다 (HH:MM)";
+    }
+
+    if (!formData.category) {
+      newErrors.category = "카테고리를 선택해주세요";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = () => {
+    if (!validateForm()) {
+      Alert.alert("입력 오류", "필수 항목을 모두 입력해주세요");
+      return;
+    }
+
+    // TODO: Save schedule data to backend/storage
     console.log("Schedule data:", formData);
     router.back();
   };
@@ -61,36 +79,63 @@ export default function AddScheduleForm() {
         <View className="gap-6">
           {/* Title */}
           <View className="gap-2">
-            <Text className="text-[#d1d5dc] text-[14px]">제목</Text>
+            <Text className="text-[#d1d5dc] text-[14px]">
+              제목 <Text className="text-[#ff6b6b]">*</Text>
+            </Text>
             <TextInput
               value={formData.title}
-              onChangeText={(text) =>
-                setFormData({ ...formData, title: text })
-              }
+              onChangeText={(text) => {
+                setFormData({ ...formData, title: text });
+                if (errors.title) setErrors({ ...errors, title: "" });
+              }}
               placeholder="일정 제목을 입력하세요"
               placeholderTextColor="#6a7282"
-              className="bg-[rgba(30,41,57,0.5)] border border-[rgba(167,139,250,0.2)] text-white p-3 rounded-[12px]"
+              className={`bg-[rgba(30,41,57,0.5)] border ${
+                errors.title ? "border-[#ff6b6b]" : "border-[rgba(167,139,250,0.2)]"
+              } text-white p-3 rounded-[12px]`}
             />
+            {errors.title && (
+              <Text className="text-[#ff6b6b] text-[12px]">{errors.title}</Text>
+            )}
           </View>
 
           {/* Date */}
           <View className="gap-2">
-            <Text className="text-[#d1d5dc] text-[14px]">날짜</Text>
+            <Text className="text-[#d1d5dc] text-[14px]">
+              날짜 <Text className="text-[#ff6b6b]">*</Text>
+            </Text>
+            {/* TODO: Replace TextInput with DateTimePicker for better UX */}
+            {/* Consider using @react-native-community/datetimepicker */}
             <TextInput
               value={formData.date}
-              onChangeText={(text) =>
-                setFormData({ ...formData, date: text })
-              }
+              onChangeText={(text) => {
+                setFormData({ ...formData, date: text });
+                if (errors.date) setErrors({ ...errors, date: "" });
+              }}
               placeholder="YYYY-MM-DD"
               placeholderTextColor="#6a7282"
-              className="bg-[rgba(30,41,57,0.5)] border border-[rgba(167,139,250,0.2)] text-white p-3 rounded-[12px]"
+              className={`bg-[rgba(30,41,57,0.5)] border ${
+                errors.date ? "border-[#ff6b6b]" : "border-[rgba(167,139,250,0.2)]"
+              } text-white p-3 rounded-[12px]`}
             />
+            {errors.date && (
+              <Text className="text-[#ff6b6b] text-[12px]">{errors.date}</Text>
+            )}
           </View>
 
           {/* Time Range */}
           <View className="gap-2">
-            <Text className="text-[#d1d5dc] text-[14px]">일정 시간</Text>
-            <View className="bg-[rgba(30,41,57,0.5)] border border-[rgba(167,139,250,0.2)] rounded-[12px] p-4">
+            <Text className="text-[#d1d5dc] text-[14px]">
+              일정 시간 <Text className="text-[#ff6b6b]">*</Text>
+            </Text>
+            {/* TODO: Replace TextInput with TimePicker for better UX */}
+            <View
+              className={`bg-[rgba(30,41,57,0.5)] border ${
+                errors.startTime || errors.endTime
+                  ? "border-[#ff6b6b]"
+                  : "border-[rgba(167,139,250,0.2)]"
+              } rounded-[12px] p-4`}
+            >
               <View className="flex-row items-center justify-between gap-3">
                 <View className="flex-1">
                   <Text className="text-[#6a7282] text-[11px] mb-1">
@@ -98,9 +143,10 @@ export default function AddScheduleForm() {
                   </Text>
                   <TextInput
                     value={formData.startTime}
-                    onChangeText={(text) =>
-                      setFormData({ ...formData, startTime: text })
-                    }
+                    onChangeText={(text) => {
+                      setFormData({ ...formData, startTime: text });
+                      if (errors.startTime) setErrors({ ...errors, startTime: "" });
+                    }}
                     placeholder="00:00"
                     placeholderTextColor="#6a7282"
                     className="text-white text-[20px] font-semibold"
@@ -115,9 +161,10 @@ export default function AddScheduleForm() {
                   </Text>
                   <TextInput
                     value={formData.endTime}
-                    onChangeText={(text) =>
-                      setFormData({ ...formData, endTime: text })
-                    }
+                    onChangeText={(text) => {
+                      setFormData({ ...formData, endTime: text });
+                      if (errors.endTime) setErrors({ ...errors, endTime: "" });
+                    }}
                     placeholder="00:00"
                     placeholderTextColor="#6a7282"
                     className="text-white text-[20px] font-semibold"
@@ -125,13 +172,18 @@ export default function AddScheduleForm() {
                 </View>
               </View>
             </View>
+            {(errors.startTime || errors.endTime) && (
+              <Text className="text-[#ff6b6b] text-[12px]">
+                {errors.startTime || errors.endTime}
+              </Text>
+            )}
           </View>
 
           {/* Notification */}
           <View className="gap-2">
             <Text className="text-[#d1d5dc] text-[14px]">알림</Text>
             <View className="flex-row flex-wrap gap-2">
-              {NOTIFICATIONS.map((notif) => (
+              {NOTIFICATION_OPTIONS.map((notif) => (
                 <Pressable
                   key={notif.value}
                   onPress={() =>
@@ -159,14 +211,17 @@ export default function AddScheduleForm() {
 
           {/* Category */}
           <View className="gap-2">
-            <Text className="text-[#d1d5dc] text-[14px]">카테고리</Text>
+            <Text className="text-[#d1d5dc] text-[14px]">
+              카테고리 <Text className="text-[#ff6b6b]">*</Text>
+            </Text>
             <View className="flex-row flex-wrap gap-2">
-              {CATEGORIES.map((cat) => (
+              {CATEGORY_OPTIONS.map((cat) => (
                 <Pressable
                   key={cat.value}
-                  onPress={() =>
-                    setFormData({ ...formData, category: cat.value })
-                  }
+                  onPress={() => {
+                    setFormData({ ...formData, category: cat.value });
+                    if (errors.category) setErrors({ ...errors, category: "" });
+                  }}
                   className={`px-4 py-2 rounded-[8px] border ${
                     formData.category === cat.value
                       ? "bg-[rgba(167,139,250,0.2)] border-violet-400"
@@ -185,6 +240,9 @@ export default function AddScheduleForm() {
                 </Pressable>
               ))}
             </View>
+            {errors.category && (
+              <Text className="text-[#ff6b6b] text-[12px]">{errors.category}</Text>
+            )}
           </View>
 
           {/* Memo */}

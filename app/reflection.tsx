@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, TextInput, Pressable, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
+import { formatDeepWorkTime } from "@/utils/timeFormat";
 
 export default function ReflectionForm() {
   const router = useRouter();
@@ -30,12 +31,6 @@ export default function ReflectionForm() {
   ];
 
   const focusLevels = [1, 2, 3, 4, 5];
-
-  const formatDeepWorkTime = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return hours > 0 ? `${hours}시간 ${mins}분` : `${mins}분`;
-  };
 
   const handleSubmit = () => {
     console.log("Reflection data:", {
@@ -81,7 +76,7 @@ export default function ReflectionForm() {
                 <View>
                   <Text className="text-[#6a7282] text-[11px]">딥워크</Text>
                   <Text className="text-white text-[16px] font-semibold">
-                    {formatDeepWorkTime(todayDeepWorkMinutes)}
+                    {formatDeepWorkTime(todayDeepWorkMinutes * 60)}
                   </Text>
                 </View>
               </View>

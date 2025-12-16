@@ -164,7 +164,7 @@ export default function StatsPage() {
                   <View key={index} className="flex-1 items-center justify-end">
                     <Text className="text-violet-400 text-[11px] mb-1">
                       {item.time}
-                      {focusTimePeriod === "일별" ? "h" : "h"}
+                      {focusTimePeriod === "일별" ? "h" : focusTimePeriod === "주별" ? "h/주" : "h/월"}
                     </Text>
                     <View
                       className="w-full bg-violet-400 rounded-t-[8px]"
